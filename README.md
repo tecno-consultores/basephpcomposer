@@ -16,6 +16,7 @@ List of installed packages:
 * nano
 * curl
 * git
+* composer
 
 List of PHP extensions:
 
