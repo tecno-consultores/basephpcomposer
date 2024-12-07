@@ -1,6 +1,6 @@
 # basephpcomposer
 
-A php 8.1 Docker image with pdo_pgsql and composer.
+A php Docker image with pdo_pgsql and composer. The tag corresponds to the PHP version
 
 List of installed packages:
 
