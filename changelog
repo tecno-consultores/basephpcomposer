@@ -1,4 +1,22 @@
-commit 8551f401e13a23364d2d68f4de1d4d0c218b2996 (HEAD -> main, origin/main)
+commit 4126215276f3250804fb8578da9d3fa7e487769b (HEAD -> main, origin/main)
+Author: Jesus Palencia <sinfallas@gmail.com>
+Date:   Sat Dec 7 11:55:24 2024 -0400
+
+    * bugfix
+
+commit 3cee8baaaef9e83fb06c4d5034a0f97a9929202f
+Author: Jesús Palencia <sinfallas@gmail.com>
+Date:   Thu Nov 28 11:29:45 2024 -0400
+
+    * bugfix
+
+commit 8b512af305bd1ee5755cfedb9f02494c31ff89d0 (tag: v1.1)
+Author: Jesus Palencia <sinfallas@gmail.com>
+Date:   Mon Nov 25 19:19:12 2024 -0400
+
+    * changelog
+
+commit 8551f401e13a23364d2d68f4de1d4d0c218b2996
 Author: Jesus Palencia <sinfallas@gmail.com>
 Date:   Mon Nov 25 19:19:00 2024 -0400
 
