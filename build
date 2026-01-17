@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Made by Sinfallas <sinfallas@yahoo.com>
+# Licence: GPL-2
+
+if [[ "$EUID" = "0" ]]; then
+	echo -e "\e[00;31mERROR: NO debe ser root.\e[00m"
+	exit 1
+fi
+
+clear
+
+docker build -t basephpcomposer81 -f Dockerfile8.1 .
+docker image tag basephpcomposer81 sinfallas/basephpcomposer:8.1 && docker image push sinfallas/basephpcomposer:8.1
+docker build -t basephpcomposer81arm -f Dockerfile8.1 .
+docker image tag basephpcomposer81arm sinfallas/basephpcomposer:8.1-arm && docker image push sinfallas/basephpcomposer:8.1-arm
+docker build -t basephpcomposer82 -f Dockerfile8.2 .
+docker image tag basephpcomposer82 sinfallas/basephpcomposer:8.2 && docker image push sinfallas/basephpcomposer:8.2
+docker build -t basephpcomposer82arm -f Dockerfile8.2 .
+docker image tag basephpcomposer82arm sinfallas/basephpcomposer:8.2-arm && docker image push sinfallas/basephpcomposer:8.2-arm
+docker build -t basephpcomposer83 -f Dockerfile8.3 .
+docker image tag basephpcomposer83 sinfallas/basephpcomposer:8.3 && docker image push sinfallas/basephpcomposer:8.3
+docker build -t basephpcomposer83arm -f Dockerfile8.3 .
+docker image tag basephpcomposer83arm sinfallas/basephpcomposer:8.3-arm && docker image push sinfallas/basephpcomposer:8.3-arm
+docker build -t basephpcomposer84 -f Dockerfile8.4 .
+docker image tag basephpcomposer84 sinfallas/basephpcomposer:8.4 && docker image push sinfallas/basephpcomposer:8.4 && docker image tag basephpcomposer84 sinfallas/basephpcomposer:latest && docker image push sinfallas/basephpcomposer:latest
+docker build -t basephpcomposer84arm -f Dockerfile8.4 .
+docker image tag basephpcomposer84arm sinfallas/basephpcomposer:8.4-arm && docker image push sinfallas/basephpcomposer:8.4-arm && docker image tag basephpcomposer84arm sinfallas/basephpcomposer:latest-arm && docker image push sinfallas/basephpcomposer:latest-arm
+docker system prune -af
+
+echo "finalizado..."
+exit 0
