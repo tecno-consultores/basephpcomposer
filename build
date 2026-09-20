@@ -8,14 +8,15 @@ if [[ "$EUID" = "0" ]]; then
 fi
 
 clear
+CURRENT_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 docker buildx rm container-builder
 docker buildx create --name container-builder --driver docker-container --bootstrap --use
-docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.1 --builder=container-builder -f Dockerfile8.1 .
-docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.2 --builder=container-builder -f Dockerfile8.2 .
-docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.3 --builder=container-builder -f Dockerfile8.3 .
-docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.4 --builder=container-builder -f Dockerfile8.4 .
-docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.5 --builder=container-builder -f Dockerfile8.5 .
-docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:latest --builder=container-builder -f Dockerfile8.5 .
+docker buildx build --platform linux/arm64,linux/amd64 --build-arg BUILD_DATE=$CURRENT_DATE --push -t sinfallas/basephpcomposer:8.1 --builder=container-builder -f Dockerfile8.1 .
+docker buildx build --platform linux/arm64,linux/amd64 --build-arg BUILD_DATE=$CURRENT_DATE --push -t sinfallas/basephpcomposer:8.2 --builder=container-builder -f Dockerfile8.2 .
+docker buildx build --platform linux/arm64,linux/amd64 --build-arg BUILD_DATE=$CURRENT_DATE --push -t sinfallas/basephpcomposer:8.3 --builder=container-builder -f Dockerfile8.3 .
+docker buildx build --platform linux/arm64,linux/amd64 --build-arg BUILD_DATE=$CURRENT_DATE --push -t sinfallas/basephpcomposer:8.4 --builder=container-builder -f Dockerfile8.4 .
+docker buildx build --platform linux/arm64,linux/amd64 --build-arg BUILD_DATE=$CURRENT_DATE --push -t sinfallas/basephpcomposer:8.5 --builder=container-builder -f Dockerfile8.5 .
+docker buildx build --platform linux/arm64,linux/amd64 --build-arg BUILD_DATE=$CURRENT_DATE --push -t sinfallas/basephpcomposer:latest --builder=container-builder -f Dockerfile8.5 .
 docker buildx rm container-builder
 docker system prune -af
 docker builder prune -af
