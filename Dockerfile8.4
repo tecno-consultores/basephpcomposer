@@ -1,7 +1,5 @@
 FROM php:8.4-fpm
-ARG BUILD_DATE
 LABEL org.opencontainers.image.authors="sinfallas@gmail.com"
-LABEL org.opencontainers.image.created=$BUILD_DATE
 
 RUN mkdir -p /var/www/
 WORKDIR /var/www
@@ -17,3 +15,5 @@ RUN chmod 777 /usr/bin/composer
 RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www
 
 CMD ["php-fpm"]
+ARG BUILD_DATE
+LABEL org.opencontainers.image.created=$BUILD_DATE
