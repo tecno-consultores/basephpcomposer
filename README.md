@@ -4,12 +4,6 @@ A php Docker image with pdo_pgsql and composer. The tag corresponds to the PHP v
 
 List of installed packages:
 
-* build-essential
-* libicu-dev
-* libzip-dev
-* libpng-dev
-* libonig-dev
-* libpq-dev
 * zip
 * unzip
 * wget
@@ -33,4 +27,4 @@ List of PHP extensions:
 
 Get this image on:
 
-* https://hub.docker.com/repository/docker/sinfallas/basephpcomposer/general
+* https://hub.docker.com/r/sinfallas/basephpcomposer

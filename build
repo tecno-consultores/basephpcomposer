@@ -8,16 +8,18 @@ if [[ "$EUID" = "0" ]]; then
 fi
 
 clear
-
-docker build -t basephpcomposer81 -f Dockerfile8.1 .
-docker image tag basephpcomposer81 sinfallas/basephpcomposer:8.1 && docker image push sinfallas/basephpcomposer:8.1
-docker build -t basephpcomposer82 -f Dockerfile8.2 .
-docker image tag basephpcomposer82 sinfallas/basephpcomposer:8.2 && docker image push sinfallas/basephpcomposer:8.2
-docker build -t basephpcomposer83 -f Dockerfile8.3 .
-docker image tag basephpcomposer83 sinfallas/basephpcomposer:8.3 && docker image push sinfallas/basephpcomposer:8.3
-docker build -t basephpcomposer84 -f Dockerfile8.4 .
-docker image tag basephpcomposer84 sinfallas/basephpcomposer:8.4 && docker image push sinfallas/basephpcomposer:8.4 && docker image tag basephpcomposer84 sinfallas/basephpcomposer:latest && docker image push sinfallas/basephpcomposer:latest
+docker buildx rm container-builder
+docker buildx create --name container-builder --driver docker-container --bootstrap --use
+docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.1 --builder=container-builder -f Dockerfile8.1 .
+docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.2 --builder=container-builder -f Dockerfile8.2 .
+docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.3 --builder=container-builder -f Dockerfile8.3 .
+docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.4 --builder=container-builder -f Dockerfile8.4 .
+docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:8.5 --builder=container-builder -f Dockerfile8.5 .
+docker buildx build --platform linux/arm64,linux/amd64 --push -t sinfallas/basephpcomposer:latest --builder=container-builder -f Dockerfile8.5 .
+docker buildx rm container-builder
 docker system prune -af
+docker builder prune -af
+docker buildx prune -af
 
 echo "finalizado..."
 exit 0
