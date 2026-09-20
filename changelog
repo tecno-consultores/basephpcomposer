@@ -1,4 +1,16 @@
-* commit fffa8c2bff6ad6228e6853a72a2313bfd9fd39d0 (HEAD -> main, origin/main, origin/HEAD)
+* commit 0e9153ac289139cc4aafc5bf5d5b587c12d98467 (HEAD -> main, origin/main, origin/HEAD)
+| Author: Jesus Palencia <sinfallas@gmail.com>
+| Date:   Sun Sep 20 11:41:56 2026 -0400
+| 
+|     * update to use graviton
+| 
+* commit c51381f74f2bec92184b8f37b14a7f0dd71197b5
+| Author: Jesus Palencia <sinfallas@gmail.com>
+| Date:   Wed Jun 17 18:46:05 2026 -0400
+| 
+|     * changelog
+| 
+* commit fffa8c2bff6ad6228e6853a72a2313bfd9fd39d0
 | Author: Jesus Palencia <sinfallas@gmail.com>
 | Date:   Wed Jun 17 18:45:53 2026 -0400
 | 
