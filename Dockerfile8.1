@@ -1,19 +1,40 @@
-FROM php:8.1-fpm
-LABEL org.opencontainers.image.authors="sinfallas@gmail.com"
+# SPDX-License-Identifier: MIT
+# Copyright (C) 2026 QA Testing Blueprints Contributors
+# Imagen Base Oficial QA 11X para PHP & Composer (Multi-Arch: linux/amd64, linux/arm64)
 
-RUN mkdir -p /var/www/
+ARG PHP_VERSION=8.1
+FROM php:${PHP_VERSION}-fpm
+
+LABEL org.opencontainers.image.authors="sinfallas@gmail.com"
+LABEL org.opencontainers.image.title="sinfallas/basephpcomposer"
+LABEL org.opencontainers.image.description="Imagen base de alto rendimiento para QA Testing Blueprints Nivel 11X"
+
 WORKDIR /var/www
 
-RUN apt-get update -qq && apt-get -y dist-upgrade && apt-get -y --no-install-recommends --no-install-suggests install zip unzip wget nano curl git && apt-get clean && apt-get -y autoremove && rm -rf /var/lib/apt/lists/* && rm -rf /var/lib/{dpkg,cache,log}
+RUN apt-get update -qq && apt-get -y dist-upgrade && apt-get -y --no-install-recommends --no-install-suggests install nano ca-certificates curl git unzip wget zip && apt-get clean && apt-get -y autoremove && rm -rf /var/lib/apt/lists/* && rm -rf /var/lib/{dpkg,cache,log}
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions bcmath mbstring pcntl intl zip opcache gd pdo pdo_pgsql pgsql
-
+COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions bcmath gd intl mbstring opcache pcntl pcov pdo pdo_pgsql pgsql redis sockets zip
 COPY ./php.ini /usr/local/etc/php/php.ini
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN chmod 777 /usr/bin/composer
-RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www
+RUN chmod 755 /usr/bin/composer
+RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www && mkdir -p /home/www/.composer /var/www && chown -R www:www /home/www /var/www
+
+RUN { \
+        echo "memory_limit = 2G"; \
+        echo "upload_max_filesize = 50M"; \
+        echo "post_max_size = 50M"; \
+        echo "pcov.enabled = 1"; \
+        echo "pcov.directory = auto"; \
+        echo "pcov.exclude = \"~vendor~\""; \
+    } > /usr/local/etc/php/conf.d/qa-11x.ini
+
+
+ENV COMPOSER_HOME=/home/www/.composer
+ENV COMPOSER_MEMORY_LIMIT=-1
+ENV PATH="/var/www/vendor/bin:${PATH}"
 
 CMD ["php-fpm"]
+
 ARG BUILD_DATE
 LABEL org.opencontainers.image.created=$BUILD_DATE
