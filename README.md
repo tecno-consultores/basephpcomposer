@@ -28,3 +28,6 @@ List of PHP extensions:
 Get this image on:
 
 * https://hub.docker.com/r/sinfallas/basephpcomposer
+
+
+Copyright (C) 2026 Jesus Palencia <sinfallas@gmail.com> (Creado en Tecno Consultores)
