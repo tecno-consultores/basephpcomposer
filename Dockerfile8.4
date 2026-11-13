@@ -5,35 +5,61 @@
 ARG PHP_VERSION=8.4
 FROM php:${PHP_VERSION}-fpm
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 LABEL org.opencontainers.image.authors="Jesus Palencia <sinfallas@gmail.com> (Creado en Tecno Consultores)"
 LABEL org.opencontainers.image.title="sinfallas/basephpcomposer"
-LABEL org.opencontainers.image.description="Imagen base de alto rendimiento para QA Testing Blueprints Nivel 11X"
+LABEL org.opencontainers.image.description="Imagen base de alto rendimiento para QA Testing Blueprints Nivel 11X v2"
 
 WORKDIR /var/www
 
-RUN apt-get update -qq && apt-get -y dist-upgrade && apt-get -y --no-install-recommends --no-install-suggests install nano ca-certificates curl git unzip wget zip && apt-get clean && apt-get -y autoremove && rm -rf /var/lib/apt/lists/* && rm -rf /var/lib/{dpkg,cache,log}
-
 COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions bcmath gd intl mbstring opcache pcntl pcov pdo pdo_pgsql pgsql redis sockets zip
+RUN install-php-extensions bcmath gd intl mbstring opcache pcntl pcov pdo pdo_pgsql pgsql redis sockets zip \
+    && DEBIAN_FRONTEND=noninteractive apt-get update -qq \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends --no-install-suggests install \
+        nano ca-certificates curl git unzip wget zip \
+    && apt-get clean \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y autoremove --purge \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /tmp/* /usr/local/bin/install-php-extensions
+
 COPY ./php.ini /usr/local/etc/php/php.ini
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN chmod 755 /usr/bin/composer
-RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www && mkdir -p /home/www/.composer /var/www && chown -R www:www /home/www /var/www
 
-RUN { \
-        echo "memory_limit = 2G"; \
-        echo "upload_max_filesize = 50M"; \
-        echo "post_max_size = 50M"; \
-        echo "pcov.enabled = 1"; \
-        echo "pcov.directory = auto"; \
-        echo "pcov.exclude = \"~vendor~\""; \
-    } > /usr/local/etc/php/conf.d/qa-11x.ini
+RUN chmod 0755 /usr/bin/composer \
+    && groupadd -g 1000 www \
+    && useradd -u 1000 -ms /bin/bash -g www www \
+    && mkdir -p /opt/qa11x/composer /home/www/.composer /tmp/composer /var/www /etc/profile.d \
+    && COMPOSER_HOME=/opt/qa11x/composer COMPOSER_CACHE_DIR=/tmp/composer-cache COMPOSER_ALLOW_SUPERUSER=1 \
+       composer global require --no-interaction --no-progress --prefer-dist phpstan/phpstan phpunit/phpunit \
+    && for bin in phpstan phpunit; do \
+         if [[ -e "/opt/qa11x/composer/vendor/bin/${bin}" ]]; then \
+           ln -sf "/opt/qa11x/composer/vendor/bin/${bin}" "/usr/local/bin/${bin}"; \
+         fi; \
+       done \
+    && { \
+         echo "memory_limit = 2G"; \
+         echo "upload_max_filesize = 50M"; \
+         echo "post_max_size = 50M"; \
+         echo "pcov.enabled = 1"; \
+         echo "pcov.directory = auto"; \
+         echo "pcov.exclude = \"~vendor~\""; \
+       } > /usr/local/etc/php/conf.d/qa-11x.ini \
+    && printf 'export PATH="/var/www/vendor/bin:/opt/qa11x/composer/vendor/bin:$PATH"\nexport COMPOSER_HOME="${COMPOSER_HOME:-/tmp/composer}"\n' > /etc/profile.d/qa11x-php.sh \
+    && chmod 0644 /etc/profile.d/qa11x-php.sh \
+    && chmod -R a+rX /opt/qa11x /usr/local/bin /usr/bin/composer /usr/local/etc/php \
+    && chown -R www:www /home/www /var/www \
+    && rm -rf /tmp/composer-cache /opt/qa11x/composer/cache /root/.composer /root/.cache /tmp/* \
+    && mkdir -p /tmp/composer \
+    && chmod 1777 /tmp/composer
 
+ENV COMPOSER_HOME=/tmp/composer \
+    COMPOSER_MEMORY_LIMIT=-1 \
+    COMPOSER_NO_INTERACTION=1 \
+    PATH="/var/www/vendor/bin:/opt/qa11x/composer/vendor/bin:${PATH}"
 
-ENV COMPOSER_HOME=/home/www/.composer
-ENV COMPOSER_MEMORY_LIMIT=-1
-ENV PATH="/var/www/vendor/bin:${PATH}"
-
+USER www
 CMD ["php-fpm"]
 
 ARG BUILD_DATE
