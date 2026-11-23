@@ -1,5 +1,7 @@
 # basephpcomposer
 
+ [![Descargas de Docker](https://img.shields.io/docker/pulls/sinfallas/basephpcomposer?style=flat&logo=docker&color=blue)](https://hub.docker.com/r/sinfallas/basephpcomposer)
+
 A php Docker image with pdo_pgsql and composer. The tag corresponds to the PHP version
 
 List of installed packages:
